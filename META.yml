@@ -2,17 +2,18 @@
 abstract: 'Moose Role for turning ordinary objects into POE TCP Servers'
 author:
   - 'Nicholas Perez <nperez@cpan.org>'
-generated_by: 'Dist::Zilla version 1.093400'
+generated_by: 'Dist::Zilla version 1.100160'
 license: gpl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: POEx-Role-TCPServer
 requires:
+  ExtUtils::MakeMaker: 6.11
   Moose: 0.93
   MooseX::Declare: 0.32
   POE: 1.281
   POEx::Role::SessionInstantiation: 0.092800
 resources:
   repository: git://github.com/nperez/pxrts.git
-version: 0.100170
+version: 0.100171

@@ -4,22 +4,35 @@ use warnings;
 
 
 
-use ExtUtils::MakeMaker;
+use ExtUtils::MakeMaker 6.11;
 
-WriteMakefile(
-  DISTNAME  => 'POEx-Role-TCPServer',
-  NAME      => 'POEx::Role::TCPServer',
-  AUTHOR    => "Nicholas\ Perez\ \<nperez\@cpan\.org\>",
-  ABSTRACT  => "Moose\ Role\ for\ turning\ ordinary\ objects\ into\ POE\ TCP\ Servers",
-  VERSION   => '0.100170',
-  EXE_FILES => [ qw() ],
-  (eval { ExtUtils::MakeMaker->VERSION(6.31) } ? (LICENSE => 'gpl') : ()),
-  PREREQ_PM    => {
-    "POEx::Role::SessionInstantiation" => '0.092800',
-    "MooseX::Declare" => '0.32',
-    "POE" => '1.281',
-    "Moose" => '0.93',
-  },
-  test => {TESTS => 't/*.t'}
-);
+
+
+my %WriteMakefileArgs = (
+                       'test' => {
+                                   'TESTS' => 't/*.t'
+                                 },
+                       'NAME' => 'POEx::Role::TCPServer',
+                       'DISTNAME' => 'POEx-Role-TCPServer',
+                       'AUTHOR' => 'Nicholas Perez <nperez@cpan.org>',
+                       'ABSTRACT' => 'Moose Role for turning ordinary objects into POE TCP Servers',
+                       'EXE_FILES' => [],
+                       'VERSION' => '0.100171',
+                       'LICENSE' => 'gpl',
+                       'PREREQ_PM' => {
+                                        'POEx::Role::SessionInstantiation' => '0.092800',
+                                        'MooseX::Declare' => '0.32',
+                                        'ExtUtils::MakeMaker' => '6.11',
+                                        'Moose' => '0.93',
+                                        'POE' => '1.281'
+                                      }
+                     );
+
+
+delete $WriteMakefileArgs{LICENSE}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.31) };
+
+WriteMakefile(%WriteMakefileArgs);
+
+
 

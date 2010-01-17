@@ -1,5 +1,6 @@
 {package POEx::Role::TCPServer;
-our $VERSION = '0.100170';}
+our $VERSION = '0.100171';
+}
 
 #ABSTRACT: A Moose Role that provides TCPServer behavior
 
@@ -144,7 +145,7 @@ POEx::Role::TCPServer - A Moose Role that provides TCPServer behavior
 
 =head1 VERSION
 
-version 0.100170
+version 0.100171
 
 =head1 REQUIRES
 
