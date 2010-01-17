@@ -1,6 +1,5 @@
-package POEx::Role::TCPServer;
-our $VERSION = '0.092340';
-
+{package POEx::Role::TCPServer;
+our $VERSION = '0.100170';}
 
 #ABSTRACT: A Moose Role that provides TCPServer behavior
 
@@ -9,7 +8,6 @@ use MooseX::Declare;
 role POEx::Role::TCPServer 
 {
     with 'POEx::Role::SessionInstantiation';
-    use MooseX::AttributeHelpers;
     use POEx::Types(':all');
     use MooseX::Types::Structured('Dict', 'Tuple', 'Optional');
     use MooseX::Types::Moose(':all');
@@ -34,19 +32,19 @@ role POEx::Role::TCPServer
 
     has wheels =>
     (
-        metaclass   => 'MooseX::AttributeHelpers::Collection::Hash',
         is          => 'rw',
         isa         => HashRef,
+        traits      => ['Hash'],
         lazy        => 1,
         default     => sub { {} },
         clearer     => 'clear_wheels',
-        provides    =>
+        handles    =>
         {
-            get     => 'get_wheel',
-            set     => 'set_wheel',
-            delete  => 'delete_wheel',
-            count   => 'count_wheels',
-            exists  => 'has_wheel',
+            'get_wheel'     => 'get',
+            'set_wheel'     => 'set',
+            'delete_wheel'  => 'delete',
+            'count_wheels'  => 'count',
+            'has_wheel'     => 'exists',
         }
     );
 
@@ -104,7 +102,7 @@ role POEx::Role::TCPServer
     }
 
 
-    method handle_listen_error(Str $action, Int $code, Str $message) is Event
+    method handle_listen_error(Str $action, Int $code, Str $message, WheelID $id) is Event
     {
         warn "Received listen error: Action $action, Code $code, Message $message"
             if $self->options->{'debug'};
@@ -138,7 +136,6 @@ role POEx::Role::TCPServer
 1;
 
 
-
 =pod
 
 =head1 NAME
@@ -147,7 +144,7 @@ POEx::Role::TCPServer - A Moose Role that provides TCPServer behavior
 
 =head1 VERSION
 
-version 0.092340
+version 0.100170
 
 =head1 REQUIRES
 
@@ -158,7 +155,105 @@ version 0.092340
 This required method will be passed the data received, and from which wheel 
 it came. 
 
+=cut
 
+=pod
+
+=head1 ATTRIBUTES
+
+=head2 socket_factory is: rw, isa: Object, predicate: has_socket_factory, clearer: clear_socket_factory
+
+The POE::Wheel::SocketFactory created in _start is stored here.
+
+=cut
+
+=pod
+
+=head2 wheels traits: ['Hash'], is: rw, isa: HashRef, clearer: clear_wheels
+
+When connections are accepted, a POE::Wheel::ReadWrite object is created and 
+stored in this attribute, keyed by WheelID. Wheels may be accessed via the
+following provided methods.
+
+=cut
+
+=pod
+
+=head2 filter is: rw, isa: Filter
+
+This stores the filter that is used when constructing wheels. It will be cloned
+for each connection accepted.
+
+=cut
+
+=pod
+
+=head2 listen_ip is: ro, isa: Str, required
+
+This will be used as the BindAddress to SocketFactory
+
+=cut
+
+=pod
+
+=head2 listen_port is: ro, isa: Int, required
+
+This will be used as the BindPort to SocketFactory
+
+=cut
+
+=pod
+
+=head1 METHODS
+
+=head2 after _start(@args) is Event
+
+The _start event is after-advised to do the start up of the SocketFactory.
+
+=cut
+
+=pod
+
+=head2 handle_on_connect(GlobRef $socket, Str $address, Int $port, WheelID $id) is Event
+
+handle_on_connect is the SuccessEvent of the SocketFactory instantiated in _start. 
+
+=cut
+
+=pod
+
+=head2 handle_listen_error(Str $action, Int $code, Str $message, WheelID $id) is Event
+
+handle_listen_error is the FailureEvent of the SocketFactory
+
+=cut
+
+=pod
+
+=head2 handle_socket_error(Str $action, Int $code, Str $message, WheelID $id) is Event
+
+handle_socket_error is the ErrorEvent of each POE::Wheel::ReadWrite instantiated.
+
+=cut
+
+=pod
+
+=head2 handle_on_flushed(WheelID $id) is Event
+
+handle_on_flushed is the FlushedEvent of each POE::Wheel::ReadWrite instantiated.
+
+=cut
+
+=pod
+
+=head2 shutdown() is Event
+
+shutdown unequivically terminates the TCPServer by clearing all wheels and 
+aliases, forcing POE to garbage collect the session.
+
+=cut
+
+=pod
 
 =head1 DESCRIPTION
 
@@ -173,102 +268,19 @@ is actually encouraged and can simplify code for the consumer.
 The only method that must be provided by the consuming class is 
 handle_inbound_data.
 
-=head1 ATTRIBUTES
-
-=head2 socket_factory is: rw, isa: Object, predicate: has_socket_factory, clearer: clear_socket_factory
-
-The POE::Wheel::SocketFactory created in _start is stored here.
-
-
-
-=head2 wheels metaclass: Collection::Hash, is: rw, isa: HashRef, clearer: clear_wheels
-
-When connections are accepted, a POE::Wheel::ReadWrite object is created and 
-stored in this attribute, keyed by WheelID. Wheels may be accessed via the
-following provided methods. See MooseX::AttributeHelpers::Collection::Hash
-for more details.
-
-    provides    =>
-    {
-        get     => 'get_wheel',
-        set     => 'set_wheel',
-        delete  => 'delete_wheel',
-        count   => 'count_wheels',
-        exists  => 'has_wheel',
-    }
-
-
-
-=head2 filter is: rw, isa: Filter
-
-This stores the filter that is used when constructing wheels. It will be cloned
-for each connection accepted.
-
-
-
-=head2 listen_ip is: ro, isa: Str, required
-
-This will be used as the BindAddress to SocketFactory
-
-
-
-=head2 listen_port is: ro, isa: Int, required
-
-This will be used as the BindPort to SocketFactory
-
-
-
-=head2 after _start(@args) is Event
-
-The _start event is after-advised to do the start up of the SocketFactory.
-
-
-
-=head2 handle_on_connect(GlobRef $socket, Str $address, Int $port, WheelID $id) is Event
-
-handle_on_connect is the SuccessEvent of the SocketFactory instantiated in _start. 
-
-
-
-=head2 handle_listen_error(Str $action, Int $code, Str $message) is Event
-
-handle_listen_error is the FailureEvent of the SocketFactory
-
-
-
-=head2 handle_socket_error(Str $action, Int $code, Str $message, WheelID $id) is Event
-
-handle_socket_error is the ErrorEvent of each POE::Wheel::ReadWrite instantiated.
-
-
-
-=head2 handle_on_flushed(WheelID $id) is Event
-
-handle_on_flushed is the FlushedEvent of each POE::Wheel::ReadWrite instantiated.
-
-
-
-=head2 shutdown() is Event
-
-shutdown unequivically terminates the TCPServer by clearing all wheels and 
-aliases, forcing POE to garbage collect the session.
-
-
-
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+Nicholas Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2009 by Nicholas Perez.
+This software is Copyright (c) 2010 by Nicholas Perez.
 
 This is free software, licensed under:
 
   The GNU General Public License, Version 3, June 2007
 
-=cut 
-
+=cut
 
 
 __END__
