@@ -1,13 +1,13 @@
 
 
-This archive contains the distribution POEx-Role-TCPServer, version
-0.100171:
+This archive contains the distribution POEx-Role-TCPServer,
+version 1.100910:
 
   Moose Role for turning ordinary objects into POE TCP Servers
 
-This software is Copyright (c) 2010 by Nicholas Perez.
+This software is copyright (c) 2010 by Nicholas Perez.
 
-This is free software, licensed under:
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
-  The GNU General Public License, Version 3, June 2007
 
