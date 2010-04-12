@@ -25,7 +25,7 @@ my %WriteMakefileArgs = (
                                            },
                        'ABSTRACT' => 'Moose Role for turning ordinary objects into POE TCP Servers',
                        'EXE_FILES' => [],
-                       'VERSION' => '1.100910',
+                       'VERSION' => '1.101020',
                        'PREREQ_PM' => {
                                         'POEx::Role::SessionInstantiation' => '0',
                                         'MooseX::Types::Moose' => '0',
