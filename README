@@ -1,9 +1,9 @@
 
 
 This archive contains the distribution POEx-Role-TCPServer,
-version 1.101020:
+version 1.102740:
 
-  Moose Role for turning ordinary objects into POE TCP Servers
+  A Moose Role that provides TCPServer behavior
 
 This software is copyright (c) 2010 by Nicholas Perez.
 

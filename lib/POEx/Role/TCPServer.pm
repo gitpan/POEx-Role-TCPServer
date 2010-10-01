@@ -1,14 +1,13 @@
 package POEx::Role::TCPServer;
 BEGIN {
-  $POEx::Role::TCPServer::VERSION = '1.101020';
+  $POEx::Role::TCPServer::VERSION = '1.102740';
 }
 
 #ABSTRACT: A Moose Role that provides TCPServer behavior
 
 use MooseX::Declare;
 
-role POEx::Role::TCPServer 
-{
+role POEx::Role::TCPServer {
     with 'POEx::Role::SessionInstantiation';
     use POEx::Types(':all');
     use MooseX::Types::Structured('Dict', 'Tuple', 'Optional');
@@ -92,8 +91,7 @@ role POEx::Role::TCPServer
     );
 
 
-    after _start(@args) is Event
-    {
+    after _start(@args) is Event {
         my $factory = POE::Wheel::SocketFactory->new
         (
             BindAddress     => $self->listen_ip,
@@ -106,8 +104,7 @@ role POEx::Role::TCPServer
     }
 
 
-    method handle_on_connect (GlobRef $socket, Str $address, Int $port, WheelID $id) is Event
-    {
+    method handle_on_connect (GlobRef $socket, Str $address, Int $port, WheelID $id) is Event {
         
         my $wheel = POE::Wheel::ReadWrite->new
         (
@@ -123,29 +120,25 @@ role POEx::Role::TCPServer
     }
 
 
-    method handle_listen_error(Str $action, Int $code, Str $message, WheelID $id) is Event
-    {
+    method handle_listen_error(Str $action, Int $code, Str $message, WheelID $id) is Event {
         warn "Received listen error: Action $action, Code $code, Message $message"
             if $self->options->{'debug'};
     }
 
 
-    method handle_socket_error(Str $action, Int $code, Str $message, WheelID $id) is Event
-    {
+    method handle_socket_error(Str $action, Int $code, Str $message, WheelID $id) is Event {
         warn "Received socket error: Action $action, Code $code, Message $message"
             if $self->options->{'debug'};
     }
 
 
-    method handle_on_flushed(WheelID $id) is Event
-    {
+    method handle_on_flushed(WheelID $id) is Event {
         1;
     }
 
 
 
-    method shutdown() is Event
-    {
+    method shutdown() is Event {
         $self->clear_socket_factory;
         $self->clear_wheels;
         $self->clear_alias;
@@ -165,7 +158,7 @@ POEx::Role::TCPServer - A Moose Role that provides TCPServer behavior
 
 =head1 VERSION
 
-version 1.101020
+version 1.102740
 
 =head1 DESCRIPTION
 
@@ -293,7 +286,7 @@ it came.
 
 =head1 AUTHOR
 
-  Nicholas Perez <nperez@cpan.org>
+Nicholas Perez <nperez@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
